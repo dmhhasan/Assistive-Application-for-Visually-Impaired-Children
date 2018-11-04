@@ -6,19 +6,50 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
-    private Button cameraInit;
+import cci.assistiveapp.TextToSpeech.TTS;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private static MainActivity INSTANCE=null;
+    private Button learningBtn;
+    private Button dialogicBtn;
+    private TTS tts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        INSTANCE = this;
         setContentView(R.layout.activity_main);
-        cameraInit = (Button) findViewById(R.id.cameraInit);
-        cameraInit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), OpenCVCamera.class);
-                startActivity(i);
-            }
-        });
+        learningBtn = (Button) findViewById(R.id.btn_learning);
+        dialogicBtn = findViewById(R.id.btn_dialogic);
+        learningBtn.setOnClickListener(this);
+        dialogicBtn.setOnClickListener(this);
+        tts = new TTS(getApplicationContext());
+    }
+
+    private void startLearning(){
+        tts.speak("You have selected self learning");
+        Intent intent = new Intent(getApplicationContext(), OpenCVCamera.class);
+        startActivity(intent);
+    }
+
+    private void startDialogic(){
+        tts.speak("You have selected dialogic reading");
+    }
+
+    public static MainActivity getINSTANCE() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_learning:
+                startLearning();
+                break;
+            case R.id.btn_dialogic:
+                startDialogic();
+                break;
+                default:
+                    break;
+        }
     }
 }
